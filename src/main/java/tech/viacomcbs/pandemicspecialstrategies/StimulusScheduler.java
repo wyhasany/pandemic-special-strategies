@@ -18,11 +18,11 @@ public class StimulusScheduler {
     void stimulate() {
         ThreadLocalRandom random = ThreadLocalRandom.current();
         int nextInt = random.nextInt(4);
-        String stimulus = switch (nextInt) {
-            case 0 -> "parents";
-            case 1 -> "school";
-            case 2 -> "money";
-            case 3 -> "health";
+        Object stimulus = switch (nextInt) {
+            case 0 -> new ParentStimulus();
+            case 1 -> new SchoolStimulus();
+            case 2 -> new MoneyStimulus();
+            case 3 -> new HealthStimulus();
             default -> "";
         };
         pandemicService.handle(stimulus);
