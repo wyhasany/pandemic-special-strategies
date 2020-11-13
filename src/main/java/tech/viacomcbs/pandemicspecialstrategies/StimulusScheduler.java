@@ -17,12 +17,13 @@ public class StimulusScheduler {
     @Scheduled(fixedRate = 1000) //1s
     void stimulate() {
         ThreadLocalRandom random = ThreadLocalRandom.current();
-        int nextInt = random.nextInt(4);
+        int nextInt = random.nextInt(5);
         String stimulus = switch (nextInt) {
             case 0 -> "parents";
             case 1 -> "school";
             case 2 -> "money";
             case 3 -> "health";
+            case 4 -> "wjug";
             default -> "";
         };
         pandemicService.handle(stimulus);
