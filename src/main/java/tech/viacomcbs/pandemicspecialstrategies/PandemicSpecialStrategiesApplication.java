@@ -42,7 +42,7 @@ interface BehaviorStrategy {
 	String canHandle();
 }
 
-@Component(value = "parents")
+@Component
 class ParentsBehavior implements BehaviorStrategy {
 
 	@Override
@@ -56,7 +56,7 @@ class ParentsBehavior implements BehaviorStrategy {
 	}
 }
 
-@Component(value = "school")
+@Component
 class SchoolBehavior implements BehaviorStrategy {
 
 	@Override
@@ -70,7 +70,7 @@ class SchoolBehavior implements BehaviorStrategy {
 	}
 }
 
-@Component(value = "money")
+@Component
 class MoneyBehavior implements BehaviorStrategy {
 
 	@Override
@@ -84,7 +84,7 @@ class MoneyBehavior implements BehaviorStrategy {
 	}
 }
 
-@Component(value = "health")
+@Component
 class HealthBehavior implements BehaviorStrategy {
 
 	@Override
