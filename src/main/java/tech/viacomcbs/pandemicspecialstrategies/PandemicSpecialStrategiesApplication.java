@@ -80,7 +80,7 @@ class MoneyBehavior implements BehaviorStrategy {
 
 	@Override
 	public String canHandle() {
-		return "school";
+		return "money";
 	}
 }
 
