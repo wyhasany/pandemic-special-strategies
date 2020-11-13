@@ -6,11 +6,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import javax.annotation.PreDestroy;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.util.concurrent.atomic.AtomicReference;
 
 @SpringBootApplication
 public class PandemicSpecialStrategiesApplication {
@@ -27,7 +26,13 @@ class PandemicService {
 	private final Map<String, BehaviorStrategy> strategies = new ConcurrentHashMap<>();
 
 	void addStrategy(BehaviorStrategy strategy) {
+		System.out.println("Register strategy: " + strategy);
 		strategies.put(strategy.canHandle(), strategy);
+	}
+
+	void removeStrategy(String strategyKey) {
+		System.out.println("Unregister strategy: " + strategyKey);
+		strategies.remove(strategyKey);
 	}
 
 	void handle(String stimulus) {
@@ -42,13 +47,24 @@ class PandemicService {
 
 interface BehaviorStrategy {
 
+	AtomicReference<PandemicService> pandemicServiceReference = new AtomicReference<>();
+
 	void handle();
 
 	String canHandle();
 
 	@Autowired
 	default void register(PandemicService pandemicService) {
+		BehaviorStrategy.pandemicServiceReference.set(pandemicService);
 		pandemicService.addStrategy(this);
+	}
+
+	@PreDestroy
+	default void unregister() {
+		PandemicService pandemicService = BehaviorStrategy.pandemicServiceReference.get();
+		if (pandemicService != null) {
+			pandemicService.removeStrategy(canHandle());
+		}
 	}
 }
 

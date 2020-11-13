@@ -20,6 +20,8 @@ public class StimulusScheduler {
 
     private final ApplicationContext context;
 
+    private final MoneyBehavior moneyBehavior;
+
     @Scheduled(fixedRate = 500)//0.5s
     void stimulate() {
         ThreadLocalRandom random = ThreadLocalRandom.current();
@@ -38,27 +40,35 @@ public class StimulusScheduler {
     @EventListener(ApplicationReadyEvent.class)
     public void registerNewBehaviour() {
         AutowireCapableBeanFactory autowireCapableBeanFactory = context.getAutowireCapableBeanFactory();
+        BehaviorStrategy wjugBehaviour = new BehaviorStrategy() {
+            @Override
+            public void handle() {
+                System.out.println("No excuses!");
+            }
+
+            @Override
+            public String canHandle() {
+                return "wjug";
+            }
+        };
         new Thread(
             () -> {
-                try {
-                    Thread.sleep(5_000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                System.out.println("Register WJUG behavior");
+                sleep5s();
                 autowireCapableBeanFactory.autowireBean(
-                    new BehaviorStrategy() {
-                        @Override
-                        public void handle() {
-                            System.out.println("No excuses!");
-                        }
-
-                        @Override
-                        public String canHandle() {
-                            return "wjug";
-                        }
-                    }
+                    wjugBehaviour
+                );
+                sleep5s();
+                autowireCapableBeanFactory.destroyBean(
+                    moneyBehavior
                 );
             }).start();
+    }
+
+    private void sleep5s() {
+        try {
+            Thread.sleep(5_000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }
